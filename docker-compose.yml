@@ -1,0 +1,49 @@
+version: '2'
+services:
+  mongodb-primary:
+    image: 'bitnami/mongodb:4.0.6'
+    container_name: mongodb-primary
+    networks:
+     mongo_net:
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-primary
+      - MONGODB_PORT_NUMBER=27017
+    volumes:
+      - './mongodb_master_data:/bitnami'
+
+  mongodb-secondary:
+    image: 'bitnami/mongodb:4.0.6'
+    container_name: mongodb-secondary
+    networks:
+     mongo_net:
+    depends_on:
+      - mongodb-primary
+    ports:
+      - '27018:27018'
+    environment:
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_PRIMARY_HOST=mongodb-primary
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-secondary
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_PORT_NUMBER=27018
+
+  mongodb-arbiter:
+    image: 'bitnami/mongodb:4.0.6'
+    container_name: mongodb-arbiter
+    networks:
+     mongo_net:
+    depends_on:
+      - mongodb-primary
+    ports:
+      - '27019:27019'
+    environment:
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_PRIMARY_HOST=mongodb-primary
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_PORT_NUMBER=27019
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
+networks:
+  mongo_net:
