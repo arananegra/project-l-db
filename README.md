@@ -1,5 +1,6 @@
 # Inicializacion
-Levantar con docker-compose up
+Levantar con ``docker-compose up``
+
 Es necesario tener la variable de entorno:
 
 ``export PROJECT_L_DATABASE_URL=mongodb://localhost:27017,localhost:27018,localhost:27019/project-l-db?replicaSet=replicaset``
